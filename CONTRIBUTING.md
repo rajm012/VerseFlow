@@ -50,12 +50,15 @@ The installer writes into the current user's local directories. For packaging
 checks, set `XDG_DATA_HOME` and `VERSEFLOW_BIN_DIR`
 to temporary directories rather than installing into your regular profile.
 
-The GitHub workflow runs the Linux tests and builds an x86_64 portable archive
-on Ubuntu 22.04. A `v`-prefixed version tag stamps the application version and
-repository, then publishes the archive to GitHub Releases. Build on the oldest
-distribution you intend to support and test the resulting archive there.
+The GitHub workflow runs on the maintainer's Ubuntu 24.04 x86_64 self-hosted
+runner. A `v`-prefixed version tag stamps the application version and repository,
+then uploads the archive directly to GitHub Releases. Manual runs accept an
+existing release tag so an archive can be rebuilt from that tag. See
+[docs/RELEASING.md](docs/RELEASING.md). Build on the oldest distribution you
+intend to support and test the resulting archive there.
 
-The download website lives in `docs/`. Preview it with
+The download website is live at [verseflow-linux.netlify.app](https://verseflow-linux.netlify.app/)
+and its source lives in `docs/`. Preview it with
 `python3 -m http.server 4173 --directory docs --bind 127.0.0.1`, then visit
 `http://localhost:4173`. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for Netlify
 and GitHub Pages hosting. Keep its repository and artifact names consistent

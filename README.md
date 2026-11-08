@@ -6,6 +6,7 @@
 [rajm012](https://github.com/rajm012), VerseFlow follows your music through
 MPRIS over the session D-Bus and displays lyrics with PyQt6.
 
+[Website](https://verseflow-linux.netlify.app/) ·
 [Source](https://github.com/rajm012/VerseFlow) ·
 [Releases](https://github.com/rajm012/VerseFlow/releases) ·
 [Report an issue](https://github.com/rajm012/VerseFlow/issues)
@@ -81,7 +82,7 @@ Provider availability and coverage vary.
 
 Settings are stored in `$XDG_CONFIG_HOME/verseflow/settings.json`, normally
 `~/.config/verseflow/settings.json`. If the new file is absent, existing Linux
-settings are read from `~/.config/verseflow/settings.json`, then
+settings are read from `~/.config/versesky/settings.json`, then
 `~/.config/constelyric/settings.json`. Future saves use the VerseFlow directory.
 Lyrics and failure history are cached
 in memory only. Supply a Musixmatch key in the controls or through
@@ -103,7 +104,7 @@ respective rights holders.
 
 The executable is `dist/VerseFlow/VerseFlow`. The portable archive is
 `dist/VerseFlow-linux-<architecture>-<version>.tar.gz`; it includes the license,
-credits, README, and a per-user installer. Override the build Python with
+README with upstream credits, and a per-user installer. Override the build Python with
 `VERSEFLOW_PYTHON`.
 
 For a downloaded release, extract the archive, enter the extracted directory,
@@ -119,8 +120,15 @@ files and directories; remove `~/.config/verseflow/` separately to delete
 settings. Use your configured XDG paths if they differ from defaults.
 
 Portable bundles inherit their build host's system-library requirements.
-The workflow targets x86_64 on Ubuntu 22.04; build and test on the oldest
-distribution you plan to support. Other architectures require their own build.
+Builds run on the maintainer's local Ubuntu 24.04 x86_64 runner. Build and test
+on the oldest distribution you plan to support; compatibility with older
+distributions is not established by a successful local build. Other
+architectures require their own build.
+
+Release `v1.1.0` uses application version `1.1.0`. The self-hosted workflow
+tests and builds locally, then uploads tagged archives directly to GitHub
+Releases. See [docs/RELEASING.md](docs/RELEASING.md) for local runner setup and
+the command to rebuild an existing release without Actions artifact storage.
 
 ## Development and branding
 
@@ -141,7 +149,8 @@ See [docs/BRANDING.md](docs/BRANDING.md) for its palette and export instructions
 
 ## Website
 
-The VerseFlow website lives in `docs/` and includes an interactive lyric
+The live website is **[verseflow-linux.netlify.app](https://verseflow-linux.netlify.app/)**.
+Its source lives in `docs/` and includes an interactive lyric
 preview, Linux installation instructions, and links to matching GitHub release
 archives. It uses the Aurora Wave logo and a cyan-and-mint palette.
 

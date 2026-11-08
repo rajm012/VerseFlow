@@ -34,7 +34,7 @@ from lyrics_sources import INFO, default_sources, ordered_sources
 from playback import MediaService
 from release_assets import linux_download_url
 
-APP_VERSION = "1.1.0-linux.1"              # stamped automatically from the git tag in CI
+APP_VERSION = "1.1.0"              # stamped automatically from the git tag in CI
 GITHUB_REPO = "rajm012/VerseFlow"   # stamped automatically in CI; edit if building by hand
 UA = {"User-Agent": "VerseFlow/1.0 (open-source lyrics app)"}
 FONT_FAMILIES = ["Noto Sans", "DejaVu Sans", "Liberation Sans", "sans-serif"]

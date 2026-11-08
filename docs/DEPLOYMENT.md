@@ -1,5 +1,8 @@
 # Host VerseFlow on Netlify
 
+The live website is **[https://verseflow-linux.netlify.app/](https://verseflow-linux.netlify.app/)**.
+Its Netlify project name is `verseflow-linux`.
+
 The website is in `docs/`. It is plain HTML, CSS, and JavaScript, with the Aurora
 logo and locally hosted fonts. It needs no website build step, server, API key,
 or package installation. The repository's Python requirements and `build.sh`
@@ -28,9 +31,8 @@ belong to the Linux desktop application.
    deployment separate from the desktop app's Python dependencies. Leave any
    package-directory setting empty.
 6. Deploy the project. Netlify assigns a `*.netlify.app` URL and provides HTTPS.
-7. In the project's settings, change the project name to `verseflow`, or another
-   available name. The exact address depends on name availability; no address
-   has been reserved or published by these repository changes.
+7. The current project uses the name `verseflow-linux`, giving the live address
+   `https://verseflow-linux.netlify.app/`. Keep that name when updating this site.
 
 Future pushes to `main` redeploy the site automatically. Pull requests can
 receive Netlify Deploy Previews. GitHub Releases and Netlify website deployments
