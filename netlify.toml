@@ -1,0 +1,5 @@
+# The website is already static. Do not run the Linux app's build.sh on Netlify.
+[build]
+  base = "docs"
+  publish = "."
+  command = ""

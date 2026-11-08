@@ -1,262 +1,695 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>VerseFlow — word-by-word lyrics for Linux</title>
-<meta name="description" content="Lyrics that bloom into constellations on your Linux desktop. Free and open source.">
-<link rel="icon" href="logo.svg" type="image/svg+xml">
-<style>
-:root{
-  --bg1:#0b0a12;--bg2:#171329;--text:#f4f1ff;--muted:#b4adcf;
-  --glass:rgba(255,255,255,.07);--glass-b:rgba(255,255,255,.16);--shadow:rgba(0,0,0,.4);
-  --accent:#ffd666;--accent2:#ff9f5a;--orb:.55;
-  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
-}
-@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){
-  --bg1:#f3effc;--bg2:#e4ddf7;--text:#1d1832;--muted:#5b5478;
-  --glass:rgba(255,255,255,.5);--glass-b:rgba(255,255,255,.85);--shadow:rgba(80,60,140,.22);--orb:.45}}
-:root[data-theme="light"]{--bg1:#f3effc;--bg2:#e4ddf7;--text:#1d1832;--muted:#5b5478;
-  --glass:rgba(255,255,255,.5);--glass-b:rgba(255,255,255,.85);--shadow:rgba(80,60,140,.22);--orb:.45}
-:root[data-theme="dark"]{--bg1:#0b0a12;--bg2:#171329;--text:#f4f1ff;--muted:#b4adcf}
-html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
-*{box-sizing:border-box}
-body{margin:0;min-height:100vh;color:var(--text);background:linear-gradient(160deg,var(--bg1),var(--bg2));
-  font:16px/1.6 "Noto Sans","DejaVu Sans",system-ui,sans-serif;overflow-x:hidden}
-.orb{position:fixed;border-radius:50%;filter:blur(80px);opacity:var(--orb);z-index:0;pointer-events:none;animation:float 20s ease-in-out infinite alternate}
-.o1{width:46vmax;height:46vmax;background:#ffcf5a;top:-14vmax;left:-12vmax}
-.o2{width:40vmax;height:40vmax;background:#7c5cff;bottom:-12vmax;right:-10vmax;animation-duration:26s}
-.o3{width:28vmax;height:28vmax;background:#ff5c93;top:38%;left:42%;animation-duration:32s;opacity:calc(var(--orb) * .7)}
-@keyframes float{to{transform:translate(8vmax,6vmax) scale(1.18)}}
-main,nav,footer{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 22px}
-nav{display:flex;align-items:center;justify-content:space-between;padding-top:22px;padding-bottom:10px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;color:inherit;text-decoration:none}
-.brand img{width:34px;height:34px}
-nav a.gh{color:var(--muted);text-decoration:none;font-size:14px;padding:8px 14px;border-radius:99px}
-nav a.gh:hover{color:var(--text)}
-.glass{position:relative;background:var(--glass);border:1px solid var(--glass-b);border-radius:24px;
-  -webkit-backdrop-filter:blur(22px) saturate(160%);backdrop-filter:blur(22px) saturate(160%);
-  box-shadow:0 14px 44px var(--shadow),inset 0 1px 0 rgba(255,255,255,.22);overflow:hidden;transition:transform .3s,border-color .3s}
-.glass::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .3s;
-  background:radial-gradient(360px circle at var(--mx,50%) var(--my,0%),rgba(255,255,255,.2),transparent 60%)}
-.glass:hover::before{opacity:1}
-.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:36px;align-items:center;padding:56px 0 36px}
-.pill{display:inline-block;padding:6px 14px;border-radius:99px;font-size:13px;color:var(--accent);
-  background:var(--glass);border:1px solid var(--glass-b);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
-h1{font-size:clamp(38px,6vw,64px);line-height:1.05;margin:18px 0 16px;letter-spacing:-.02em}
-h1 span{background:linear-gradient(90deg,var(--accent),var(--accent2),#ff5c93,var(--accent));background-size:300% 100%;
-  -webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 8s linear infinite}
-@keyframes shine{to{background-position:300% 0}}
-.lead{color:var(--muted);font-size:18px;max-width:30em;margin:0 0 28px}
-.cta{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
-.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:10px;padding:15px 26px;border-radius:16px;
-  font:600 16px/1 inherit;color:#241a05;text-decoration:none;background:linear-gradient(135deg,#ffe08a,var(--accent2));
-  box-shadow:0 10px 30px rgba(255,170,80,.35);transition:transform .2s,box-shadow .2s}
-.btn:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 16px 40px rgba(255,170,80,.5)}
-.btn::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;transform:skewX(-20deg);
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);animation:sweep 3.6s ease-in-out infinite}
-@keyframes sweep{0%,60%{left:-60%}100%{left:140%}}
-.btn.ghost{color:var(--text);background:var(--glass);border:1px solid var(--glass-b);box-shadow:none;
-  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
-.btn.ghost::after{display:none}
-.meta{margin-top:14px;font-size:13px;color:var(--muted)}
-.screen{padding:12px;animation:bob 7s ease-in-out infinite alternate}
-@keyframes bob{to{transform:translateY(-12px) rotate(-.6deg)}}
-.screen canvas{display:block;width:100%;aspect-ratio:16/10;border-radius:16px;background:#050408}
-h2{font-size:clamp(26px,4vw,38px);margin:70px 0 8px;text-align:center;letter-spacing:-.01em}
-.sub{text-align:center;color:var(--muted);margin:0 auto 30px;max-width:34em}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.card{padding:26px}
-.card .ico{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:22px;margin-bottom:14px;
-  background:linear-gradient(135deg,rgba(255,214,102,.35),rgba(124,92,255,.35));border:1px solid var(--glass-b)}
-.card h3{margin:0 0 6px;font-size:19px}
-.card p{margin:0;color:var(--muted);font-size:15px}
-.steps{padding:30px;display:grid;grid-template-columns:repeat(3,1fr);gap:26px;counter-reset:s}
-.step{counter-increment:s}
-.step::before{content:counter(s);display:grid;place-items:center;width:38px;height:38px;border-radius:50%;margin-bottom:12px;
-  font-weight:700;color:#241a05;background:linear-gradient(135deg,#ffe08a,var(--accent2))}
-.step b{display:block;margin-bottom:4px}.step span{color:var(--muted);font-size:15px}
-.note{margin:22px auto 0;padding:18px 22px;max-width:760px;font-size:15px;color:var(--muted)}
-.note b{color:var(--text)}
-footer{padding-top:50px;padding-bottom:40px;text-align:center;color:var(--muted);font-size:14px}
-footer a{color:var(--accent);text-decoration:none}
-.rv{opacity:1;transform:none;transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}
-.js .rv{opacity:0;transform:translateY(26px)}
-.js .rv.in{opacity:1;transform:none}
-.pop{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:22px;background:rgba(8,6,16,.45);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:opacity .45s,visibility .45s}
-.pop.show{opacity:1;visibility:visible}
-.popcard{width:min(400px,100%);padding:34px 28px 26px;text-align:center;transform:translateY(30px) scale(.94);transition:transform .55s cubic-bezier(.2,.9,.3,1.3)}
-.pop.show .popcard{transform:none}
-.popcard h3{margin:10px 0 6px;font-size:23px}
-.popcard p{margin:0 0 14px;color:var(--muted);font-size:15px}
-.popcard .cnt{font-size:13px;color:var(--accent);min-height:1em;margin-bottom:16px}
-.bigstar{font-size:54px;line-height:1;color:var(--accent);filter:drop-shadow(0 0 18px rgba(255,200,90,.8));animation:spin 4s ease-in-out infinite}
-@keyframes spin{0%,100%{transform:rotate(-8deg) scale(1)}50%{transform:rotate(12deg) scale(1.15)}}
-.x{position:absolute;top:10px;right:14px;border:0;background:none;color:var(--muted);font-size:26px;line-height:1;cursor:pointer}
-.x:hover,.later:hover{color:var(--text)}
-.later{display:block;margin:14px auto 0;border:0;background:none;color:var(--muted);font:inherit;font-size:14px;cursor:pointer}
-@media (max-width:860px){.hero{grid-template-columns:1fr;padding-top:30px}.grid,.steps{grid-template-columns:1fr}}
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
-</style>
-</head>
-<body>
-<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#080f1a" />
+    <meta
+      name="description"
+      content="Meet VerseFlow: synchronized lyrics for your Linux desktop. Let every word flow in Stack, Focus, or Constellation. Free and open source."
+    />
+    <meta property="og:title" content="VerseFlow — lyrics in motion" />
+    <meta
+      property="og:description"
+      content="Your music, in a different light. Synchronized lyrics for your Linux desktop."
+    />
+    <meta property="og:type" content="website" />
+    <title>VerseFlow — lyrics in motion for Linux</title>
+    <link rel="icon" href="logo.svg" type="image/svg+xml" />
+    <link
+      rel="preload"
+      href="fonts/sora-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <svg
+      class="icon-library"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <symbol id="i-arrow" viewBox="0 0 24 24">
+        <path d="M5 12h14m-6-6 6 6-6 6" />
+      </symbol>
+      <symbol id="i-download" viewBox="0 0 24 24">
+        <path d="M12 3v12m-5-5 5 5 5-5M5 16v4h14v-4" />
+      </symbol>
+      <symbol id="i-github" viewBox="0 0 24 24">
+        <path
+          d="M9 19c-4 1-4-2-6-2m12 5v-4a3.5 3.5 0 0 0-1-2.7c3.3-.4 6.8-1.6 6.8-7.3a5.7 5.7 0 0 0-1.5-4 5.2 5.2 0 0 0-.1-4s-1.3-.4-4.2 1.5a14.5 14.5 0 0 0-7.6 0C4.5-.4 3.2 0 3.2 0a5.2 5.2 0 0 0-.1 4A5.7 5.7 0 0 0 1.6 8c0 5.7 3.5 6.9 6.8 7.3A3.5 3.5 0 0 0 7.4 18v4"
+          transform="translate(1 1) scale(.9)"
+        />
+      </symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4" />
+        <path
+          d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"
+        />
+      </symbol>
+      <symbol id="i-moon" viewBox="0 0 24 24">
+        <path d="M20.8 13a9 9 0 0 1-9.8-9.8A9 9 0 1 0 20.8 13Z" />
+      </symbol>
+      <symbol id="i-play" viewBox="0 0 24 24">
+        <path d="m9 5 11 7-11 7Z" />
+      </symbol>
+      <symbol id="i-pause" viewBox="0 0 24 24">
+        <path d="M8 5v14m8-14v14" />
+      </symbol>
+      <symbol id="i-check" viewBox="0 0 24 24">
+        <path d="m5 12 4 4L19 6" />
+      </symbol>
+      <symbol id="i-copy" viewBox="0 0 24 24">
+        <rect x="8" y="8" width="12" height="12" rx="2" />
+        <path d="M16 8V4H4v12h4" />
+      </symbol>
+      <symbol id="i-star" viewBox="0 0 24 24">
+        <path
+          d="m12 3 2.8 5.7 6.3.9-4.6 4.5 1.1 6.3-5.6-3-5.6 3 1.1-6.3L2.9 9.6l6.3-.9Z"
+        />
+      </symbol>
+      <symbol id="i-music" viewBox="0 0 24 24">
+        <path d="M9 18V5l11-2v13M9 9l11-2" />
+        <ellipse cx="6" cy="18" rx="3" ry="2.5" />
+        <ellipse cx="17" cy="16" rx="3" ry="2.5" />
+      </symbol>
+      <symbol id="i-stack" viewBox="0 0 24 24">
+        <path d="M7 5h10M4 12h16M7 19h10" />
+      </symbol>
+      <symbol id="i-focus" viewBox="0 0 24 24">
+        <path d="M8 4H4v4m12-4h4v4M4 16v4h4m12-4v4h-4M8 12h8" />
+      </symbol>
+      <symbol id="i-spark" viewBox="0 0 24 24">
+        <path
+          d="M12 2c1 7 3 9 10 10-7 1-9 3-10 10-1-7-3-9-10-10 7-1 9-3 10-10Z"
+        />
+      </symbol>
+      <symbol id="i-code" viewBox="0 0 24 24">
+        <path d="m8 6-6 6 6 6m8-12 6 6-6 6M14 3l-4 18" />
+      </symbol>
+      <symbol id="i-palette" viewBox="0 0 24 24">
+        <path d="M12 3a9 9 0 1 0 0 18c2 0 3-1 2-3s0-3 2-3h2c5 0 4-12-6-12Z" />
+        <circle cx="7" cy="10" r=".8" />
+        <circle cx="11" cy="7" r=".8" />
+        <circle cx="16" cy="8" r=".8" />
+      </symbol>
+    </svg>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="aurora-background" aria-hidden="true"></div>
 
-<nav>
-  <a class="brand" href="#top">
-    <img src="logo.svg" width="34" height="34" alt="VerseFlow logo">
-    VerseFlow
-  </a>
-  <a class="gh" data-repo href="https://github.com/rajm012/VerseFlow">GitHub ↗</a>
-</nav>
+    <header class="site-header wrap">
+      <a class="brand" href="#" aria-label="VerseFlow home"
+        ><img src="logo.svg" width="40" height="40" alt="" /><span
+          >VerseFlow<span class="brand-dot">.</span></span
+        ></a
+      >
+      <nav aria-label="Main navigation">
+        <a class="nav-link" href="#experience">Experience</a>
+        <a class="nav-link" href="#install">Get started</a>
+        <a class="github-link" href="https://github.com/rajm012/VerseFlow"
+          ><svg class="icon" aria-hidden="true"><use href="#i-github" /></svg
+          ><span>GitHub</span></a
+        >
+        <button
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button"
+          aria-label="Switch to light theme"
+        >
+          <svg class="icon" aria-hidden="true">
+            <use id="theme-icon" href="#i-sun" />
+          </svg>
+        </button>
+      </nav>
+    </header>
 
-<main id="top">
-  <section class="hero">
-    <div class="rv">
-      <span class="pill">✦ Free &amp; open source · Linux · X11 first</span>
-      <h1>Lyrics that bloom into <span>constellations</span></h1>
-      <p class="lead">VerseFlow follows your music through Linux MPRIS media players and lights up each lyric, one word at a time. Maintained by rajm012.</p>
-      <div class="cta">
-        <a class="btn" id="dl" data-dl="setup" href="#installation">Linux portable build</a>
-        <a class="btn ghost" data-repo href="https://github.com/rajm012/VerseFlow">Source on GitHub</a>
+    <main id="main">
+      <section class="hero wrap" aria-labelledby="hero-title">
+        <div class="eyebrow hero-badge">
+          <span class="status-dot"></span> A LITTLE MORE FEELING. A LOT MORE
+          LINUX.
+        </div>
+        <h1 id="hero-title">
+          Your music.<br />In a
+          <span class="gradient-text">different light.</span>
+        </h1>
+        <p class="hero-description">
+          Let your lyrics flow across the desktop. Word by word,<br
+            class="desktop-break"
+          />
+          line by line, or into a sky full of stars.
+        </p>
+        <div class="hero-actions">
+          <a class="button button-primary" data-download href="#install"
+            ><svg class="icon" aria-hidden="true">
+              <use href="#i-download" /></svg
+            ><span data-download-label>Get VerseFlow</span></a
+          >
+          <a class="button button-secondary" href="#experience"
+            >Find your flow<svg class="icon" aria-hidden="true">
+              <use href="#i-arrow" /></svg
+          ></a>
+        </div>
+        <p class="release-note" id="release-info" aria-live="polite">
+          Free &amp; open source <span>·</span> Made for your Linux desktop
+        </p>
+      </section>
+
+      <section
+        class="experience wrap"
+        id="experience"
+        aria-labelledby="experience-title"
+      >
+        <h2 class="sr-only" id="experience-title">
+          Try the three lyric styles
+        </h2>
+        <div class="preview-halo" aria-hidden="true"></div>
+        <div class="preview-window">
+          <div class="window-bar">
+            <div class="window-brand">
+              <img src="logo.svg" width="23" height="23" alt="" /><span
+                >VerseFlow</span
+              ><span class="window-divider">/</span
+              ><span class="window-subtitle">a moment of music</span>
+            </div>
+            <span class="demo-badge"
+              ><span class="status-dot"></span> LIVE PREVIEW</span
+            >
+          </div>
+          <div class="preview-controls">
+            <div
+              class="style-tabs"
+              role="tablist"
+              aria-label="Lyric display style"
+            >
+              <button
+                id="tab-stack"
+                role="tab"
+                aria-selected="true"
+                aria-controls="lyric-preview"
+                tabindex="0"
+                data-mode="Stack"
+              >
+                <svg class="icon" aria-hidden="true">
+                  <use href="#i-stack" /></svg
+                >Stack
+              </button>
+              <button
+                id="tab-focus"
+                role="tab"
+                aria-selected="false"
+                aria-controls="lyric-preview"
+                tabindex="-1"
+                data-mode="Focus"
+              >
+                <svg class="icon" aria-hidden="true">
+                  <use href="#i-focus" /></svg
+                >Focus
+              </button>
+              <button
+                id="tab-constellation"
+                role="tab"
+                aria-selected="false"
+                aria-controls="lyric-preview"
+                tabindex="-1"
+                data-mode="Constellation"
+              >
+                <svg class="icon" aria-hidden="true">
+                  <use href="#i-spark" /></svg
+                >Constellation
+              </button>
+            </div>
+            <span class="preview-caption"
+              >One song. Your kind of atmosphere.</span
+            >
+          </div>
+          <div
+            class="lyric-preview"
+            id="lyric-preview"
+            role="tabpanel"
+            aria-labelledby="tab-stack"
+            tabindex="0"
+            data-style="Stack"
+          >
+            <div class="preview-grid" aria-hidden="true"></div>
+            <div class="preview-orbit orbit-one" aria-hidden="true"></div>
+            <div class="preview-orbit orbit-two" aria-hidden="true"></div>
+            <div id="stack-display" class="stack-display">
+              <p class="previous-line" id="previous-line">
+                we move wherever the music goes
+              </p>
+              <p class="current-line" id="stack-line">
+                let the night feel like home
+              </p>
+              <p class="next-line" id="next-line">
+                a little light in every word
+              </p>
+            </div>
+            <div id="focus-display" class="focus-display" hidden>
+              <span class="focus-overline">JUST YOU AND THIS MOMENT</span>
+              <p class="current-line" id="focus-line">
+                let the night feel like home
+              </p>
+              <span class="focus-underline" aria-hidden="true"></span>
+            </div>
+            <canvas
+              id="constellation-display"
+              hidden
+              role="img"
+              aria-label="Animated constellation of the original demo lyrics"
+            ></canvas>
+            <span class="preview-corner corner-top" aria-hidden="true">✦</span
+            ><span class="preview-corner corner-bottom" aria-hidden="true"
+              >✦</span
+            >
+          </div>
+          <div class="playback-bar">
+            <button
+              class="play-button"
+              id="play-toggle"
+              type="button"
+              aria-label="Pause lyric preview"
+            >
+              <svg class="icon" aria-hidden="true">
+                <use id="play-icon" href="#i-pause" />
+              </svg>
+            </button>
+            <div class="demo-track">
+              <span>Lyrics in motion</span
+              ><small>Original demo · no audio</small>
+            </div>
+            <label class="sr-only" for="demo-progress">Preview progress</label
+            ><input
+              id="demo-progress"
+              class="demo-progress"
+              type="range"
+              min="0"
+              max="12000"
+              step="100"
+              value="1800"
+              aria-valuetext="2 seconds of 12"
+            />
+            <span id="demo-time" class="demo-time">0:02 / 0:12</span>
+            <svg class="wave-mark" viewBox="0 0 52 26" aria-hidden="true">
+              <path d="M2 16c5 0 5-11 10-11s5 21 10 21S27 9 32 9s5 7 10 7h8" />
+            </svg>
+          </div>
+        </div>
+        <p class="preview-footnote">
+          <span class="tiny-star">✧</span> Try a style. Pause a moment. Make it
+          yours.
+        </p>
+      </section>
+
+      <section class="player-strip wrap" aria-label="Compatible media players">
+        <span class="player-strip-label">YOUR PLAYER. YOUR PLAYLIST.</span>
+        <div class="player-names">
+          <span><span class="player-dot spotify-dot"></span>Spotify</span
+          ><span><span class="player-dot vlc-dot"></span>VLC</span
+          ><span
+            ><svg class="icon" aria-hidden="true"><use href="#i-music" /></svg
+            >Browser media</span
+          ><span class="mpris-label">and other MPRIS players</span>
+        </div>
+        <p>Browser support depends on the browser and the music site.</p>
+      </section>
+
+      <section
+        class="styles-section wrap section-space"
+        aria-labelledby="styles-title"
+      >
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">THREE WAYS TO FEEL IT</span>
+            <h2 id="styles-title">A flow for every mood.</h2>
+          </div>
+          <p>
+            Stay close to the words, or get lost in them.<br />Switch styles
+            whenever the mood changes.
+          </p>
+        </div>
+        <div class="style-cards">
+          <button
+            class="style-card is-selected"
+            data-style-choice="Stack"
+            aria-pressed="true"
+            type="button"
+          >
+            <div class="mini-preview mini-stack" aria-hidden="true">
+              <span>the world slows down</span
+              ><strong>right here, right now</strong
+              ><span>one word at a time</span>
+            </div>
+            <div class="card-heading">
+              <h3>Stack</h3>
+              <span class="card-number">01</span>
+            </div>
+            <p>
+              Keep the last line, this moment, and what comes next in view. A
+              familiar karaoke flow.
+            </p>
+            <span class="card-link"
+              >Find your rhythm<svg class="icon" aria-hidden="true">
+                <use href="#i-arrow" /></svg
+            ></span>
+          </button>
+          <button
+            class="style-card"
+            data-style-choice="Focus"
+            aria-pressed="false"
+            type="button"
+          >
+            <div class="mini-preview mini-focus" aria-hidden="true">
+              <span>feel <b>the flow</b></span
+              ><i></i>
+            </div>
+            <div class="card-heading">
+              <h3>Focus</h3>
+              <span class="card-number">02</span>
+            </div>
+            <p>
+              A little less noise. One lyric at a time, with each word gently
+              finding its place.
+            </p>
+            <span class="card-link"
+              >Be in the moment<svg class="icon" aria-hidden="true">
+                <use href="#i-arrow" /></svg
+            ></span>
+          </button>
+          <button
+            class="style-card"
+            data-style-choice="Constellation"
+            aria-pressed="false"
+            type="button"
+          >
+            <div class="mini-preview mini-constellation" aria-hidden="true">
+              <svg viewBox="0 0 300 140">
+                <path d="m48 99 66-60 80 56 58-55" />
+                <g>
+                  <text x="29" y="120">every</text>
+                  <text x="96" y="22">word</text>
+                  <text x="180" y="120">a</text>
+                  <text x="235" y="22">star</text>
+                </g>
+                <circle cx="48" cy="99" r="4" />
+                <circle cx="114" cy="39" r="5" />
+                <circle cx="194" cy="95" r="4" />
+                <path
+                  class="mini-star"
+                  d="M252 24q0 16 16 16-16 0-16 16 0-16-16-16 16 0 16-16Z"
+                />
+              </svg>
+            </div>
+            <div class="card-heading">
+              <h3>Constellation</h3>
+              <span class="card-number">03</span>
+            </div>
+            <p>
+              Let the music fill your screen. Words become stars, linked across
+              a personal night sky.
+            </p>
+            <span class="card-link"
+              >Look a little higher<svg class="icon" aria-hidden="true">
+                <use href="#i-arrow" /></svg
+            ></span>
+          </button>
+        </div>
+      </section>
+
+      <section
+        class="details-section wrap"
+        aria-label="More VerseFlow features"
+      >
+        <div class="detail">
+          <span class="detail-icon"
+            ><svg class="icon" aria-hidden="true"><use href="#i-palette" /></svg
+          ></span>
+          <div>
+            <h3>Colours that feel like your music.</h3>
+            <p>Let album art set the palette, or choose your own.</p>
+          </div>
+        </div>
+        <div class="detail">
+          <span class="detail-icon"
+            ><svg class="icon" aria-hidden="true"><use href="#i-music" /></svg
+          ></span>
+          <div>
+            <h3>Words, right when you need them.</h3>
+            <p>Seven lyric sources. Word timing when available.</p>
+          </div>
+        </div>
+        <div class="detail">
+          <span class="detail-icon"
+            ><svg class="icon" aria-hidden="true"><use href="#i-code" /></svg
+          ></span>
+          <div>
+            <h3>Open source. Yours to explore.</h3>
+            <p>No app account. GPL v3. Built with Python and Qt.</p>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="install-section wrap section-space"
+        id="install"
+        aria-labelledby="install-title"
+      >
+        <div class="install-intro">
+          <span class="eyebrow">A FEW COMMANDS. A NEW ATMOSPHERE.</span>
+          <h2 id="install-title">Let it flow<br />on your desktop.</h2>
+          <p>
+            Bring VerseFlow to your Linux session.<br />Your next song can take
+            it from there.
+          </p>
+          <div class="requirement-chips">
+            <span>Python 3.10+</span><span>Linux + MPRIS</span
+            ><span>X11 first</span>
+          </div>
+          <p class="desktop-note">
+            Ubuntu / GNOME on X11 is the first target. Wayland fullscreen works
+            as a regular window; overlay placement depends on your compositor.
+          </p>
+          <a
+            class="text-link"
+            href="https://github.com/rajm012/VerseFlow#run-from-source"
+            >Read the full setup guide<svg class="icon" aria-hidden="true">
+              <use href="#i-arrow" /></svg
+          ></a>
+        </div>
+        <div class="install-panel">
+          <div
+            class="install-tabs"
+            role="tablist"
+            aria-label="Installation method"
+          >
+            <button
+              id="tab-source"
+              type="button"
+              role="tab"
+              aria-selected="true"
+              aria-controls="source-install"
+              tabindex="0"
+              data-install="source"
+            >
+              From source</button
+            ><button
+              id="tab-portable"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="portable-install"
+              tabindex="-1"
+              data-install="portable"
+            >
+              Portable release
+            </button>
+          </div>
+          <div
+            id="source-install"
+            role="tabpanel"
+            aria-labelledby="tab-source"
+            tabindex="0"
+          >
+            <div class="terminal-header">
+              <span
+                ><span class="terminal-dot"></span> Terminal
+                <span class="terminal-platform"
+                  >/ Ubuntu &amp; Debian</span
+                ></span
+              ><button
+                id="copy-install"
+                class="copy-button"
+                type="button"
+                aria-label="Copy source installation commands"
+              >
+                <svg class="icon" aria-hidden="true">
+                  <use id="copy-icon" href="#i-copy" /></svg
+                ><span id="copy-label">Copy</span>
+              </button>
+            </div>
+            <pre
+              class="terminal"
+              tabindex="0"
+              aria-label="Source installation commands"
+            ><code id="install-commands"><span class="code-comment"># Get the desktop dependencies</span>
+sudo apt install python3-venv \
+  libxcb-cursor0 libxkbcommon-x11-0
+
+<span class="code-comment"># Bring VerseFlow home</span>
+git clone https://github.com/rajm012/VerseFlow.git
+cd VerseFlow
+./setup.sh
+<span class="code-run">./run.sh</span></code></pre>
+            <div class="terminal-footer">
+              <svg class="icon" aria-hidden="true"><use href="#i-check" /></svg
+              >Setup creates a local Python environment for you.
+            </div>
+            <p
+              id="copy-status"
+              class="sr-only"
+              role="status"
+              aria-live="polite"
+            ></p>
+          </div>
+          <div
+            id="portable-install"
+            class="portable-install"
+            role="tabpanel"
+            aria-labelledby="tab-portable"
+            tabindex="0"
+            hidden
+          >
+            <span class="portable-icon"
+              ><svg class="icon" aria-hidden="true">
+                <use href="#i-download" /></svg
+            ></span>
+            <h3>A little less setup.</h3>
+            <p>
+              Download an archive for your architecture, extract it, then run
+              <code>./install.sh</code> inside the extracted folder. It installs
+              for your user account.
+            </p>
+            <label for="architecture">Linux architecture</label
+            ><select id="architecture">
+              <option value="x86_64">x86_64 / AMD64</option>
+              <option value="aarch64">ARM64 / aarch64</option></select
+            ><a
+              id="portable-download"
+              class="button button-primary"
+              href="https://github.com/rajm012/VerseFlow/releases"
+              >View Linux releases<svg class="icon" aria-hidden="true">
+                <use href="#i-arrow" /></svg
+            ></a>
+            <p class="portable-status" id="portable-status" aria-live="polite">
+              Choose a matching Linux archive from GitHub Releases. Source
+              installation is available above.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="faq-section wrap section-space"
+        aria-labelledby="faq-title"
+      >
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">GOOD TO KNOW</span>
+            <h2 id="faq-title">Before you press play.</h2>
+          </div>
+        </div>
+        <div class="faq-grid">
+          <details>
+            <summary>Which players work with VerseFlow?<span>+</span></summary>
+            <p>
+              Players that publish MPRIS metadata on your Linux session,
+              including Spotify and VLC. Browser support depends on the browser
+              and website. A generic media title may not match a song.
+            </p>
+          </details>
+          <details>
+            <summary>Where do the lyrics come from?<span>+</span></summary>
+            <p>
+              Choose from lrc.red, BiniLyrics, LyricsPlus, KuGou, BetterLyrics,
+              Musixmatch, and LRCLIB. Availability varies. Musixmatch needs your
+              own API key and is disabled by default. Line-only lyrics use
+              estimated word timing.
+            </p>
+          </details>
+          <details>
+            <summary>Does it work on Wayland?<span>+</span></summary>
+            <p>
+              Fullscreen works as a regular application window. Desktop
+              placement, click-through behaviour, and stacking depend on your
+              compositor. The primary target is Ubuntu / GNOME on X11; full
+              Wayland parity has not been verified.
+            </p>
+          </details>
+          <details>
+            <summary>What data leaves my desktop?<span>+</span></summary>
+            <p>
+              Track titles, artists, and supported durations go to the enabled
+              lyric providers. Artwork may be downloaded from the player's URL.
+              Update checks contact GitHub. Lyrics are cached in memory, and
+              settings stay in your XDG config directory.
+            </p>
+          </details>
+        </div>
+      </section>
+
+      <section class="community wrap">
+        <div class="community-glow" aria-hidden="true"></div>
+        <img src="logo.svg" width="64" height="64" alt="" /><span
+          class="eyebrow"
+          >MADE WITH FEELING. SHARED WITH EVERYONE.</span
+        >
+        <h2>A small app.<br />A little more magic.</h2>
+        <p>
+          VerseFlow is free and open source.<br />If it finds a place on your
+          desktop, give it a star.
+        </p>
+        <a
+          class="button button-secondary"
+          href="https://github.com/rajm012/VerseFlow"
+          ><svg class="icon" aria-hidden="true"><use href="#i-star" /></svg>Star
+          VerseFlow on GitHub<svg class="icon" aria-hidden="true">
+            <use href="#i-arrow" /></svg
+        ></a>
+      </section>
+    </main>
+
+    <footer class="site-footer wrap">
+      <div class="footer-top">
+        <a class="brand" href="#"
+          ><img src="logo.svg" width="32" height="32" alt="" /><span
+            >VerseFlow<span class="brand-dot">.</span></span
+          ></a
+        >
+        <p>Lyrics in motion. Made for Linux.</p>
+        <div class="footer-links">
+          <a href="https://github.com/rajm012/VerseFlow">Source</a
+          ><a href="https://github.com/rajm012/VerseFlow/releases">Releases</a
+          ><a href="https://github.com/rajm012/VerseFlow/issues">Feedback</a>
+        </div>
       </div>
-      <div class="meta" id="meta">Follows Spotify, VLC and supported browser players through MPRIS.</div>
-    </div>
-    <div class="glass screen rv"><canvas id="cv" aria-label="Animated demo of VerseFlow’s constellation style"></canvas></div>
-  </section>
-
-  <h2 class="rv">Three ways to see your lyrics</h2>
-  <p class="sub rv">Pick a style from the tray panel at any time.</p>
-  <section class="grid">
-    <article class="glass card rv"><div class="ico">☰</div><h3>Stack</h3><p>Three lines glide up as the song moves on, with a karaoke wipe across every word.</p></article>
-    <article class="glass card rv"><div class="ico">◎</div><h3>Focus</h3><p>One line at a time. Upcoming words float up into place just before they’re sung.</p></article>
-    <article class="glass card rv"><div class="ico">✦</div><h3>Constellation</h3><p>Fullscreen. Every word becomes a star, linked into a web, inside a soft ambient glow.</p></article>
-  </section>
-
-  <h2 class="rv">Run on your Linux desktop</h2>
-  <section class="glass steps rv" id="installation">
-    <div class="step"><b>Download</b><span>Extract the Linux portable archive when available, or use the Linux source checkout.</span></div>
-    <div class="step"><b>Run it</b><span>From source: run ./setup.sh, then ./run.sh. Portable builds include install.sh for your user account.</span></div>
-    <div class="step"><b>Play a song</b><span>Use the control panel or tray icon to choose Stack, Focus, or Constellation.</span></div>
-  </section>
-  <div class="glass note rv"><b>Desktop support:</b> Ubuntu/GNOME on X11 is the first target. Wayland overlay placement depends on the compositor. When no tray is available, the controls open in a regular window.</div>
-</main>
-
-<footer>
-  <p>Lyrics come from LRCLIB and other enabled community services and belong to their rights holders. Licensed under GPL-3.0.</p>
-  <p>Maintained by <a href="https://github.com/rajm012">rajm012</a> · <a data-repo href="https://github.com/rajm012/VerseFlow">Source on GitHub</a> · <a data-rel href="https://github.com/rajm012/VerseFlow/releases">All releases</a></p>
-  <p>Thank you, <a href="https://github.com/rajbhar-rohit">rajbhar-rohit</a>, for creating <a href="https://github.com/rajbhar-rohit/Constelyric">Constelyric</a> and sharing the open-source foundation for VerseFlow.</p>
-</footer>
-
-<div class="pop" id="star" role="dialog" aria-modal="true" aria-labelledby="st">
-  <div class="glass popcard">
-    <button class="x" data-close aria-label="Close">×</button>
-    <div class="bigstar">★</div>
-    <h3 id="st">Enjoying VerseFlow?</h3>
-    <p>It’s free and open source. A star on GitHub helps other people find it.</p>
-    <p class="cnt" id="cnt"></p>
-    <a class="btn" data-star target="_blank" rel="noopener" href="#">★ Star on GitHub</a>
-    <button class="later" data-close>Maybe later</button>
-  </div>
-</div>
-
-<script>
-// Repository maintained by rajm012; keep this in sync with verseflow.py.
-const REPO = "rajm012/VerseFlow";
-
-const base = "https://github.com/" + REPO;
-document.querySelectorAll("[data-repo]").forEach(a => a.href = base);
-document.querySelectorAll("[data-rel]").forEach(a => a.href = base + "/releases");
-document.querySelectorAll("[data-dl]").forEach(a => a.href = "#installation");
-document.getElementById("meta").textContent = "Linux builds are being developed; use the Linux source checkout.";
-if (!REPO.startsWith("YOUR-")) {
-  fetch("https://api.github.com/repos/" + REPO + "/releases/latest").then(r => { if (!r.ok) throw new Error("No release available"); return r.json(); }).then(rel => {
-    const find = re => (rel.assets || []).find(a => re.test(a.name));
-    const setup = find(/^VerseFlow-linux-x86_64-.*\.tar\.gz$/i);
-    if (setup) {
-      document.getElementById("dl").href = setup.browser_download_url;
-      document.getElementById("meta").textContent =
-        "Version " + String(rel.tag_name).replace(/^v/, "") + " · " + (setup.size / 1048576).toFixed(0) + " MB · Linux x86_64";
-    }
-
-  }).catch(() => {});
-}
-
-// scroll reveal
-document.documentElement.classList.add("js");
-const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), {threshold: .15});
-document.querySelectorAll(".rv").forEach((el, i) => { el.style.transitionDelay = (i % 3) * 90 + "ms"; io.observe(el); });
-
-// glass highlight follows the pointer
-document.querySelectorAll(".glass").forEach(g => g.addEventListener("pointermove", e => {
-  const r = g.getBoundingClientRect();
-  g.style.setProperty("--mx", (e.clientX - r.left) + "px");
-  g.style.setProperty("--my", (e.clientY - r.top) + "px");
-}));
-
-// live constellation demo
-(() => {
-  const cv = document.getElementById("cv"), ctx = cv.getContext("2d");
-  const words = "hold the night in your hands every word is a star and we wander through the light together tonight".split(" ");
-  let W, H, nodes = [], i = 0, last = 0, seed = 7;
-  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-  function fit() { const d = devicePixelRatio || 1; W = cv.clientWidth; H = cv.clientHeight; cv.width = W * d; cv.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0); }
-  addEventListener("resize", fit); fit();
-  function add() {
-    if (nodes.length >= 11) { nodes = []; }
-    let best, bs = -1;
-    for (let k = 0; k < 40; k++) {
-      const x = W * (.16 + .68 * rnd()), y = H * (.2 + .6 * rnd());
-      const s = Math.min(...nodes.map(n => Math.hypot(n.x - x, n.y - y)), 999);
-      if (s > bs) { bs = s; best = [x, y]; }
-    }
-    const long = words[i % words.length].length > 4;
-    nodes.push({x: best[0], y: best[1], w: words[i % words.length], t: performance.now(), big: long});
-    i++;
-  }
-  function frame(t) {
-    if (t - last > 650) { add(); last = t; }
-    ctx.clearRect(0, 0, W, H);
-    // soft border light
-    const a = t / 4000, g = ctx.createConicGradient ? ctx.createConicGradient(-a, W / 2, H / 2) : null;
-    if (g) { g.addColorStop(0, "rgba(255,214,102,.95)"); g.addColorStop(.3, "rgba(255,214,102,.12)"); g.addColorStop(1, "rgba(255,214,102,.12)");
-      ctx.strokeStyle = g; ctx.lineWidth = 2; ctx.shadowColor = "rgba(255,200,90,.8)"; ctx.shadowBlur = 18; ctx.strokeRect(3, 3, W - 6, H - 6); ctx.shadowBlur = 0; }
-    ctx.lineWidth = 1;
-    nodes.forEach((n, k) => {
-      const age = (t - n.t) / 1000, cur = k === nodes.length - 1, al = cur ? 1 : Math.max(.35, .8 - (nodes.length - 1 - k) * .07);
-      if (k) {
-        const p = nodes[k - 1], gr = Math.min(1, age * 3);
-        ctx.strokeStyle = "rgba(255,214,102," + .45 * al + ")";
-        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x + (n.x - p.x) * gr, p.y + (n.y - p.y) * gr); ctx.stroke();
-      }
-      const r = (cur ? 9 : 5) + (n.big ? 3 : 0), pop = 1 + .4 * Math.max(0, 1 - age * 3);
-      ctx.save(); ctx.translate(n.x, n.y); ctx.scale(pop, pop);
-      ctx.fillStyle = cur ? "rgba(255,243,200," + al + ")" : "rgba(255,214,102," + al + ")";
-      ctx.beginPath(); ctx.moveTo(0, -r); ctx.quadraticCurveTo(0, 0, r, 0); ctx.quadraticCurveTo(0, 0, 0, r);
-      ctx.quadraticCurveTo(0, 0, -r, 0); ctx.quadraticCurveTo(0, 0, 0, -r); ctx.fill();
-      if (cur) { ctx.strokeStyle = "rgba(255,230,150,.85)"; ctx.beginPath(); ctx.arc(0, 0, r + 6, 0, 7); ctx.stroke(); }
-      ctx.restore();
-      ctx.font = (cur ? "700 " : "500 ") + Math.round(H * (cur ? .075 : n.big ? .05 : .04)) + "px 'Noto Sans',system-ui,sans-serif";
-      ctx.fillStyle = cur ? "rgba(255,243,200," + al + ")" : "rgba(255,214,102," + al + ")";
-      ctx.fillText(n.w, n.x + r + 8, n.y + 5);
-    });
-    requestAnimationFrame(frame);
-  }
-  requestAnimationFrame(frame);
-})();
-
-// “Star us” pop-up: opens on every visit (nothing is stored in the browser)
-(() => {
-  const pop = document.getElementById("star"), close = () => pop.classList.remove("show");
-  document.querySelectorAll("[data-star]").forEach(a => a.href = base);
-  if (!REPO.startsWith("YOUR-")) fetch("https://api.github.com/repos/" + REPO).then(r => r.json()).then(d => {
-    if (d.stargazers_count != null) document.getElementById("cnt").textContent = d.stargazers_count.toLocaleString() + " people have starred it";
-  }).catch(() => {});
-  setTimeout(() => { pop.classList.add("show"); pop.querySelector("a").focus({preventScroll: true}); }, 1800);
-  pop.addEventListener("click", e => { if (e.target === pop || e.target.closest("[data-close]")) close(); });
-  addEventListener("keydown", e => { if (e.key === "Escape") close(); });
-  pop.querySelector("a").addEventListener("click", () => setTimeout(close, 300));
-})();
-</script>
-</body>
+      <div class="footer-bottom">
+        <span
+          >Maintained by <a href="https://github.com/rajm012">rajm012</a> ·
+          <a href="https://github.com/rajm012/VerseFlow/blob/main/LICENSE"
+            >GPL v3</a
+          ></span
+        ><span>Lyrics belong to their respective rights holders.</span>
+      </div>
+      <p class="upstream-credit">
+        With thanks to
+        <a href="https://github.com/rajbhar-rohit">rajbhar-rohit</a> for
+        creating
+        <a href="https://github.com/rajbhar-rohit/Constelyric">Constelyric</a>
+        and sharing the open-source foundation for VerseFlow.
+      </p>
+    </footer>
+  </body>
 </html>

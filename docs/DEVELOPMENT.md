@@ -19,13 +19,14 @@ Start with the setup and test commands in [CONTRIBUTING.md](../CONTRIBUTING.md).
 | `tests/` | Isolated D-Bus, playback, lyric-provider, and Qt checks |
 | `assets/logo.svg`, `assets/logo.png`, `assets/logo-1024.png` | Aurora Wave source and PNG exports |
 | `tools/export_logos.py` | Export the Aurora Wave app icon and high-resolution PNG using Qt |
-| `docs/index.html` | GitHub Pages download website |
+| `docs/index.html`, `docs/styles.css`, `docs/script.js` | Static download website and interactive lyric demo |
+| `netlify.toml`, `docs/DEPLOYMENT.md` | Netlify hosting configuration and instructions |
 
 ## Repository and releases
 
 The app and website use `rajm012/VerseFlow` as their repository target. If you
 publish under a different repository name, update `GITHUB_REPO` in
-`verseflow.py`, `REPO` in `docs/index.html`, and the documentation links.
+`verseflow.py`, `REPO` in `docs/script.js`, and the HTML and documentation links.
 The local checkout's remote is configured separately with Git.
 
 The workflow in `.github/workflows/release.yml` tests and builds on pushes
@@ -34,9 +35,11 @@ also stamps `APP_VERSION` and `GITHUB_REPO` using `tools/set_version.py`, then
 uploads the portable archive to a GitHub Release. The existing application
 version remains `1.1.0-linux.1` until a version tag replaces it.
 
-Configure GitHub Pages to serve the `main` branch's `/docs` folder. The website
-uses `docs/logo.svg` so its icon is included in the published folder. It falls
-back to source installation instructions when no matching x86_64 archive exists.
+The website is ready for Netlify using the root `netlify.toml`; see
+[DEPLOYMENT.md](DEPLOYMENT.md). It can also be served with GitHub Pages from
+`main` → `/docs`. The website uses `docs/logo.svg` and self-hosted fonts so all
+visual assets are inside the published folder. It falls back to source
+installation instructions when no matching Linux archive exists.
 
 ## Check a portable bundle
 
@@ -58,7 +61,7 @@ and leaves previous files available to older versions.
 
 ## Attribution
 
-Keep [LICENSE](../LICENSE) and [CREDITS.md](../CREDITS.md) in redistributed
+Keep [LICENSE](../LICENSE) and [README credits](../README.md#license-and-credits) in redistributed
 bundles. See [BRANDING.md](BRANDING.md) for the logo assets and selection steps.
 
 Thank you, **[rajbhar-rohit](https://github.com/rajbhar-rohit)**, for creating

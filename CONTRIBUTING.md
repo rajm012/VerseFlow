@@ -55,14 +55,16 @@ on Ubuntu 22.04. A `v`-prefixed version tag stamps the application version and
 repository, then publishes the archive to GitHub Releases. Build on the oldest
 distribution you intend to support and test the resulting archive there.
 
-The download website lives in `docs/`. If you publish it with GitHub Pages,
-configure Pages to serve `main` → `/docs`. Keep its repository and artifact
-names consistent with the application and release workflow.
+The download website lives in `docs/`. Preview it with
+`python3 -m http.server 4173 --directory docs --bind 127.0.0.1`, then visit
+`http://localhost:4173`. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for Netlify
+and GitHub Pages hosting. Keep its repository and artifact names consistent
+with the application and release workflow.
 
 ## License and attribution
 
 Contributions are distributed under the project's GNU GPL v3 license. Keep
-the original attribution and dependency notices; see [CREDITS.md](CREDITS.md)
+the original attribution and dependency notices; see [README credits](README.md#license-and-credits)
 and [LICENSE](LICENSE).
 
 Thank you, **[rajbhar-rohit](https://github.com/rajbhar-rohit)**, for creating

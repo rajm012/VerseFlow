@@ -139,9 +139,26 @@ The selected **Aurora Wave** logo has an [editable SVG source](assets/logo.svg)
 and a [1024 px PNG export](assets/logo-1024.png).
 See [docs/BRANDING.md](docs/BRANDING.md) for its palette and export instructions.
 
+## Website
+
+The VerseFlow website lives in `docs/` and includes an interactive lyric
+preview, Linux installation instructions, and links to matching GitHub release
+archives. It uses the Aurora Wave logo and a cyan-and-mint palette.
+
+Preview it locally:
+
+```bash
+python3 -m http.server 4173 --directory docs --bind 127.0.0.1
+```
+
+Open `http://localhost:4173`. To host it, connect this repository to Netlify;
+the root `netlify.toml` publishes the static site without building the desktop
+app. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for the complete steps and a
+manual drag-and-drop option.
+
 ## License and credits
 
-GNU GPL v3; see [LICENSE](LICENSE) and [CREDITS.md](CREDITS.md).
+GNU GPL v3; see [LICENSE](LICENSE).
 The original project supplies the foundation for the animated displays and
 lyric integrations. VerseFlow's Linux adaptation and maintenance are by
 [rajm012](https://github.com/rajm012).

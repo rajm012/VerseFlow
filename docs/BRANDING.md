@@ -40,7 +40,7 @@ their icons.
 
 The original vector logo is distributed with the project's GNU GPL v3 license.
 The original project's authorship remains acknowledged in
-[CREDITS.md](../CREDITS.md).
+[README credits](../README.md#license-and-credits).
 
 Thank you, **[rajbhar-rohit](https://github.com/rajbhar-rohit)**, for creating
 **[Constelyric](https://github.com/rajbhar-rohit/Constelyric)** and sharing the
