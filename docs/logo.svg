@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+<title id="title">VerseFlow — Aurora Wave</title>
+<desc id="desc">A flowing waveform under a single star. Original logo concept for rajm012's Linux lyrics app.</desc>
+<defs><linearGradient id="tile" x2="1" y2="1"><stop stop-color="#132337"/><stop offset="1" stop-color="#173E53"/></linearGradient></defs>
+<rect x="8" y="8" width="496" height="496" rx="112" fill="url(#tile)"/>
+<rect x="8.5" y="8.5" width="495" height="495" rx="111.5" fill="none" stroke="#7DD9F2" stroke-opacity=".13"/>
+<path d="M99 281C138 281 138 203 177 203S216 352 255 352 294 253 333 253 372 291 413 291" fill="none" stroke="#7DD9F2" stroke-width="25" stroke-linecap="round"/>
+<path d="M99 342C138 342 138 288 177 288S216 400 255 400 294 325 333 325 372 353 413 353" fill="none" stroke="#7DD9F2" stroke-width="10" stroke-linecap="round" opacity=".35"/>
+<path d="M340 93C345 130 355 140 392 145C355 150 345 160 340 197C335 160 325 150 288 145C325 140 335 130 340 93Z" fill="#DFECFF"/>
+</svg>

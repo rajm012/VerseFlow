@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VerseFlow — word-by-word lyrics for Linux</title>
+<meta name="description" content="Lyrics that bloom into constellations on your Linux desktop. Free and open source.">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<style>
+:root{
+  --bg1:#0b0a12;--bg2:#171329;--text:#f4f1ff;--muted:#b4adcf;
+  --glass:rgba(255,255,255,.07);--glass-b:rgba(255,255,255,.16);--shadow:rgba(0,0,0,.4);
+  --accent:#ffd666;--accent2:#ff9f5a;--orb:.55;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){
+  --bg1:#f3effc;--bg2:#e4ddf7;--text:#1d1832;--muted:#5b5478;
+  --glass:rgba(255,255,255,.5);--glass-b:rgba(255,255,255,.85);--shadow:rgba(80,60,140,.22);--orb:.45}}
+:root[data-theme="light"]{--bg1:#f3effc;--bg2:#e4ddf7;--text:#1d1832;--muted:#5b5478;
+  --glass:rgba(255,255,255,.5);--glass-b:rgba(255,255,255,.85);--shadow:rgba(80,60,140,.22);--orb:.45}
+:root[data-theme="dark"]{--bg1:#0b0a12;--bg2:#171329;--text:#f4f1ff;--muted:#b4adcf}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--text);background:linear-gradient(160deg,var(--bg1),var(--bg2));
+  font:16px/1.6 "Noto Sans","DejaVu Sans",system-ui,sans-serif;overflow-x:hidden}
+.orb{position:fixed;border-radius:50%;filter:blur(80px);opacity:var(--orb);z-index:0;pointer-events:none;animation:float 20s ease-in-out infinite alternate}
+.o1{width:46vmax;height:46vmax;background:#ffcf5a;top:-14vmax;left:-12vmax}
+.o2{width:40vmax;height:40vmax;background:#7c5cff;bottom:-12vmax;right:-10vmax;animation-duration:26s}
+.o3{width:28vmax;height:28vmax;background:#ff5c93;top:38%;left:42%;animation-duration:32s;opacity:calc(var(--orb) * .7)}
+@keyframes float{to{transform:translate(8vmax,6vmax) scale(1.18)}}
+main,nav,footer{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 22px}
+nav{display:flex;align-items:center;justify-content:space-between;padding-top:22px;padding-bottom:10px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;color:inherit;text-decoration:none}
+.brand img{width:34px;height:34px}
+nav a.gh{color:var(--muted);text-decoration:none;font-size:14px;padding:8px 14px;border-radius:99px}
+nav a.gh:hover{color:var(--text)}
+.glass{position:relative;background:var(--glass);border:1px solid var(--glass-b);border-radius:24px;
+  -webkit-backdrop-filter:blur(22px) saturate(160%);backdrop-filter:blur(22px) saturate(160%);
+  box-shadow:0 14px 44px var(--shadow),inset 0 1px 0 rgba(255,255,255,.22);overflow:hidden;transition:transform .3s,border-color .3s}
+.glass::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .3s;
+  background:radial-gradient(360px circle at var(--mx,50%) var(--my,0%),rgba(255,255,255,.2),transparent 60%)}
+.glass:hover::before{opacity:1}
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:36px;align-items:center;padding:56px 0 36px}
+.pill{display:inline-block;padding:6px 14px;border-radius:99px;font-size:13px;color:var(--accent);
+  background:var(--glass);border:1px solid var(--glass-b);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+h1{font-size:clamp(38px,6vw,64px);line-height:1.05;margin:18px 0 16px;letter-spacing:-.02em}
+h1 span{background:linear-gradient(90deg,var(--accent),var(--accent2),#ff5c93,var(--accent));background-size:300% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 8s linear infinite}
+@keyframes shine{to{background-position:300% 0}}
+.lead{color:var(--muted);font-size:18px;max-width:30em;margin:0 0 28px}
+.cta{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:10px;padding:15px 26px;border-radius:16px;
+  font:600 16px/1 inherit;color:#241a05;text-decoration:none;background:linear-gradient(135deg,#ffe08a,var(--accent2));
+  box-shadow:0 10px 30px rgba(255,170,80,.35);transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 16px 40px rgba(255,170,80,.5)}
+.btn::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;transform:skewX(-20deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);animation:sweep 3.6s ease-in-out infinite}
+@keyframes sweep{0%,60%{left:-60%}100%{left:140%}}
+.btn.ghost{color:var(--text);background:var(--glass);border:1px solid var(--glass-b);box-shadow:none;
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.btn.ghost::after{display:none}
+.meta{margin-top:14px;font-size:13px;color:var(--muted)}
+.screen{padding:12px;animation:bob 7s ease-in-out infinite alternate}
+@keyframes bob{to{transform:translateY(-12px) rotate(-.6deg)}}
+.screen canvas{display:block;width:100%;aspect-ratio:16/10;border-radius:16px;background:#050408}
+h2{font-size:clamp(26px,4vw,38px);margin:70px 0 8px;text-align:center;letter-spacing:-.01em}
+.sub{text-align:center;color:var(--muted);margin:0 auto 30px;max-width:34em}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{padding:26px}
+.card .ico{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:22px;margin-bottom:14px;
+  background:linear-gradient(135deg,rgba(255,214,102,.35),rgba(124,92,255,.35));border:1px solid var(--glass-b)}
+.card h3{margin:0 0 6px;font-size:19px}
+.card p{margin:0;color:var(--muted);font-size:15px}
+.steps{padding:30px;display:grid;grid-template-columns:repeat(3,1fr);gap:26px;counter-reset:s}
+.step{counter-increment:s}
+.step::before{content:counter(s);display:grid;place-items:center;width:38px;height:38px;border-radius:50%;margin-bottom:12px;
+  font-weight:700;color:#241a05;background:linear-gradient(135deg,#ffe08a,var(--accent2))}
+.step b{display:block;margin-bottom:4px}.step span{color:var(--muted);font-size:15px}
+.note{margin:22px auto 0;padding:18px 22px;max-width:760px;font-size:15px;color:var(--muted)}
+.note b{color:var(--text)}
+footer{padding-top:50px;padding-bottom:40px;text-align:center;color:var(--muted);font-size:14px}
+footer a{color:var(--accent);text-decoration:none}
+.rv{opacity:1;transform:none;transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}
+.js .rv{opacity:0;transform:translateY(26px)}
+.js .rv.in{opacity:1;transform:none}
+.pop{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:22px;background:rgba(8,6,16,.45);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:opacity .45s,visibility .45s}
+.pop.show{opacity:1;visibility:visible}
+.popcard{width:min(400px,100%);padding:34px 28px 26px;text-align:center;transform:translateY(30px) scale(.94);transition:transform .55s cubic-bezier(.2,.9,.3,1.3)}
+.pop.show .popcard{transform:none}
+.popcard h3{margin:10px 0 6px;font-size:23px}
+.popcard p{margin:0 0 14px;color:var(--muted);font-size:15px}
+.popcard .cnt{font-size:13px;color:var(--accent);min-height:1em;margin-bottom:16px}
+.bigstar{font-size:54px;line-height:1;color:var(--accent);filter:drop-shadow(0 0 18px rgba(255,200,90,.8));animation:spin 4s ease-in-out infinite}
+@keyframes spin{0%,100%{transform:rotate(-8deg) scale(1)}50%{transform:rotate(12deg) scale(1.15)}}
+.x{position:absolute;top:10px;right:14px;border:0;background:none;color:var(--muted);font-size:26px;line-height:1;cursor:pointer}
+.x:hover,.later:hover{color:var(--text)}
+.later{display:block;margin:14px auto 0;border:0;background:none;color:var(--muted);font:inherit;font-size:14px;cursor:pointer}
+@media (max-width:860px){.hero{grid-template-columns:1fr;padding-top:30px}.grid,.steps{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+
+<nav>
+  <a class="brand" href="#top">
+    <img src="logo.svg" width="34" height="34" alt="VerseFlow logo">
+    VerseFlow
+  </a>
+  <a class="gh" data-repo href="https://github.com/rajm012/VerseFlow">GitHub ↗</a>
+</nav>
+
+<main id="top">
+  <section class="hero">
+    <div class="rv">
+      <span class="pill">✦ Free &amp; open source · Linux · X11 first</span>
+      <h1>Lyrics that bloom into <span>constellations</span></h1>
+      <p class="lead">VerseFlow follows your music through Linux MPRIS media players and lights up each lyric, one word at a time. Maintained by rajm012.</p>
+      <div class="cta">
+        <a class="btn" id="dl" data-dl="setup" href="#installation">Linux portable build</a>
+        <a class="btn ghost" data-repo href="https://github.com/rajm012/VerseFlow">Source on GitHub</a>
+      </div>
+      <div class="meta" id="meta">Follows Spotify, VLC and supported browser players through MPRIS.</div>
+    </div>
+    <div class="glass screen rv"><canvas id="cv" aria-label="Animated demo of VerseFlow’s constellation style"></canvas></div>
+  </section>
+
+  <h2 class="rv">Three ways to see your lyrics</h2>
+  <p class="sub rv">Pick a style from the tray panel at any time.</p>
+  <section class="grid">
+    <article class="glass card rv"><div class="ico">☰</div><h3>Stack</h3><p>Three lines glide up as the song moves on, with a karaoke wipe across every word.</p></article>
+    <article class="glass card rv"><div class="ico">◎</div><h3>Focus</h3><p>One line at a time. Upcoming words float up into place just before they’re sung.</p></article>
+    <article class="glass card rv"><div class="ico">✦</div><h3>Constellation</h3><p>Fullscreen. Every word becomes a star, linked into a web, inside a soft ambient glow.</p></article>
+  </section>
+
+  <h2 class="rv">Run on your Linux desktop</h2>
+  <section class="glass steps rv" id="installation">
+    <div class="step"><b>Download</b><span>Extract the Linux portable archive when available, or use the Linux source checkout.</span></div>
+    <div class="step"><b>Run it</b><span>From source: run ./setup.sh, then ./run.sh. Portable builds include install.sh for your user account.</span></div>
+    <div class="step"><b>Play a song</b><span>Use the control panel or tray icon to choose Stack, Focus, or Constellation.</span></div>
+  </section>
+  <div class="glass note rv"><b>Desktop support:</b> Ubuntu/GNOME on X11 is the first target. Wayland overlay placement depends on the compositor. When no tray is available, the controls open in a regular window.</div>
+</main>
+
+<footer>
+  <p>Lyrics come from LRCLIB and other enabled community services and belong to their rights holders. Licensed under GPL-3.0.</p>
+  <p>Maintained by <a href="https://github.com/rajm012">rajm012</a> · <a data-repo href="https://github.com/rajm012/VerseFlow">Source on GitHub</a> · <a data-rel href="https://github.com/rajm012/VerseFlow/releases">All releases</a></p>
+  <p>Thank you, <a href="https://github.com/rajbhar-rohit">rajbhar-rohit</a>, for creating <a href="https://github.com/rajbhar-rohit/Constelyric">Constelyric</a> and sharing the open-source foundation for VerseFlow.</p>
+</footer>
+
+<div class="pop" id="star" role="dialog" aria-modal="true" aria-labelledby="st">
+  <div class="glass popcard">
+    <button class="x" data-close aria-label="Close">×</button>
+    <div class="bigstar">★</div>
+    <h3 id="st">Enjoying VerseFlow?</h3>
+    <p>It’s free and open source. A star on GitHub helps other people find it.</p>
+    <p class="cnt" id="cnt"></p>
+    <a class="btn" data-star target="_blank" rel="noopener" href="#">★ Star on GitHub</a>
+    <button class="later" data-close>Maybe later</button>
+  </div>
+</div>
+
+<script>
+// Repository maintained by rajm012; keep this in sync with verseflow.py.
+const REPO = "rajm012/VerseFlow";
+
+const base = "https://github.com/" + REPO;
+document.querySelectorAll("[data-repo]").forEach(a => a.href = base);
+document.querySelectorAll("[data-rel]").forEach(a => a.href = base + "/releases");
+document.querySelectorAll("[data-dl]").forEach(a => a.href = "#installation");
+document.getElementById("meta").textContent = "Linux builds are being developed; use the Linux source checkout.";
+if (!REPO.startsWith("YOUR-")) {
+  fetch("https://api.github.com/repos/" + REPO + "/releases/latest").then(r => { if (!r.ok) throw new Error("No release available"); return r.json(); }).then(rel => {
+    const find = re => (rel.assets || []).find(a => re.test(a.name));
+    const setup = find(/^VerseFlow-linux-x86_64-.*\.tar\.gz$/i);
+    if (setup) {
+      document.getElementById("dl").href = setup.browser_download_url;
+      document.getElementById("meta").textContent =
+        "Version " + String(rel.tag_name).replace(/^v/, "") + " · " + (setup.size / 1048576).toFixed(0) + " MB · Linux x86_64";
+    }
+
+  }).catch(() => {});
+}
+
+// scroll reveal
+document.documentElement.classList.add("js");
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), {threshold: .15});
+document.querySelectorAll(".rv").forEach((el, i) => { el.style.transitionDelay = (i % 3) * 90 + "ms"; io.observe(el); });
+
+// glass highlight follows the pointer
+document.querySelectorAll(".glass").forEach(g => g.addEventListener("pointermove", e => {
+  const r = g.getBoundingClientRect();
+  g.style.setProperty("--mx", (e.clientX - r.left) + "px");
+  g.style.setProperty("--my", (e.clientY - r.top) + "px");
+}));
+
+// live constellation demo
+(() => {
+  const cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+  const words = "hold the night in your hands every word is a star and we wander through the light together tonight".split(" ");
+  let W, H, nodes = [], i = 0, last = 0, seed = 7;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  function fit() { const d = devicePixelRatio || 1; W = cv.clientWidth; H = cv.clientHeight; cv.width = W * d; cv.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0); }
+  addEventListener("resize", fit); fit();
+  function add() {
+    if (nodes.length >= 11) { nodes = []; }
+    let best, bs = -1;
+    for (let k = 0; k < 40; k++) {
+      const x = W * (.16 + .68 * rnd()), y = H * (.2 + .6 * rnd());
+      const s = Math.min(...nodes.map(n => Math.hypot(n.x - x, n.y - y)), 999);
+      if (s > bs) { bs = s; best = [x, y]; }
+    }
+    const long = words[i % words.length].length > 4;
+    nodes.push({x: best[0], y: best[1], w: words[i % words.length], t: performance.now(), big: long});
+    i++;
+  }
+  function frame(t) {
+    if (t - last > 650) { add(); last = t; }
+    ctx.clearRect(0, 0, W, H);
+    // soft border light
+    const a = t / 4000, g = ctx.createConicGradient ? ctx.createConicGradient(-a, W / 2, H / 2) : null;
+    if (g) { g.addColorStop(0, "rgba(255,214,102,.95)"); g.addColorStop(.3, "rgba(255,214,102,.12)"); g.addColorStop(1, "rgba(255,214,102,.12)");
+      ctx.strokeStyle = g; ctx.lineWidth = 2; ctx.shadowColor = "rgba(255,200,90,.8)"; ctx.shadowBlur = 18; ctx.strokeRect(3, 3, W - 6, H - 6); ctx.shadowBlur = 0; }
+    ctx.lineWidth = 1;
+    nodes.forEach((n, k) => {
+      const age = (t - n.t) / 1000, cur = k === nodes.length - 1, al = cur ? 1 : Math.max(.35, .8 - (nodes.length - 1 - k) * .07);
+      if (k) {
+        const p = nodes[k - 1], gr = Math.min(1, age * 3);
+        ctx.strokeStyle = "rgba(255,214,102," + .45 * al + ")";
+        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x + (n.x - p.x) * gr, p.y + (n.y - p.y) * gr); ctx.stroke();
+      }
+      const r = (cur ? 9 : 5) + (n.big ? 3 : 0), pop = 1 + .4 * Math.max(0, 1 - age * 3);
+      ctx.save(); ctx.translate(n.x, n.y); ctx.scale(pop, pop);
+      ctx.fillStyle = cur ? "rgba(255,243,200," + al + ")" : "rgba(255,214,102," + al + ")";
+      ctx.beginPath(); ctx.moveTo(0, -r); ctx.quadraticCurveTo(0, 0, r, 0); ctx.quadraticCurveTo(0, 0, 0, r);
+      ctx.quadraticCurveTo(0, 0, -r, 0); ctx.quadraticCurveTo(0, 0, 0, -r); ctx.fill();
+      if (cur) { ctx.strokeStyle = "rgba(255,230,150,.85)"; ctx.beginPath(); ctx.arc(0, 0, r + 6, 0, 7); ctx.stroke(); }
+      ctx.restore();
+      ctx.font = (cur ? "700 " : "500 ") + Math.round(H * (cur ? .075 : n.big ? .05 : .04)) + "px 'Noto Sans',system-ui,sans-serif";
+      ctx.fillStyle = cur ? "rgba(255,243,200," + al + ")" : "rgba(255,214,102," + al + ")";
+      ctx.fillText(n.w, n.x + r + 8, n.y + 5);
+    });
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+// “Star us” pop-up: opens on every visit (nothing is stored in the browser)
+(() => {
+  const pop = document.getElementById("star"), close = () => pop.classList.remove("show");
+  document.querySelectorAll("[data-star]").forEach(a => a.href = base);
+  if (!REPO.startsWith("YOUR-")) fetch("https://api.github.com/repos/" + REPO).then(r => r.json()).then(d => {
+    if (d.stargazers_count != null) document.getElementById("cnt").textContent = d.stargazers_count.toLocaleString() + " people have starred it";
+  }).catch(() => {});
+  setTimeout(() => { pop.classList.add("show"); pop.querySelector("a").focus({preventScroll: true}); }, 1800);
+  pop.addEventListener("click", e => { if (e.target === pop || e.target.closest("[data-close]")) close(); });
+  addEventListener("keydown", e => { if (e.key === "Escape") close(); });
+  pop.querySelector("a").addEventListener("click", () => setTimeout(close, 300));
+})();
+</script>
+</body>
+</html>

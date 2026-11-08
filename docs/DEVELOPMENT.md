@@ -1,0 +1,66 @@
+# VerseFlow development
+
+VerseFlow is maintained by [rajm012](https://github.com/rajm012) at
+[rajm012/VerseFlow](https://github.com/rajm012/VerseFlow).
+Start with the setup and test commands in [CONTRIBUTING.md](../CONTRIBUTING.md).
+
+## Code layout
+
+| File | Responsibility |
+| --- | --- |
+| `verseflow.py` | Qt displays, controls, settings, single instance, update checks |
+| `linux_media.py` | MPRIS metadata, playback clock, desktop idle inhibition |
+| `playback.py` | Background media polling, lyric requests, artwork loading |
+| `lyrics_sources.py` | Provider integrations, timing parsers, source preferences, cache |
+| `release_assets.py` | Matching Linux release artifacts to the current architecture |
+| `setup.sh`, `run.sh` | Local virtual environment and source launcher |
+| `build.sh`, `install.sh` | Portable Linux bundle and per-user installation |
+| `packaging/verseflow.desktop` | Linux applications-menu metadata |
+| `tests/` | Isolated D-Bus, playback, lyric-provider, and Qt checks |
+| `assets/logo.svg`, `assets/logo.png`, `assets/logo-1024.png` | Aurora Wave source and PNG exports |
+| `tools/export_logos.py` | Export the Aurora Wave app icon and high-resolution PNG using Qt |
+| `docs/index.html` | GitHub Pages download website |
+
+## Repository and releases
+
+The app and website use `rajm012/VerseFlow` as their repository target. If you
+publish under a different repository name, update `GITHUB_REPO` in
+`verseflow.py`, `REPO` in `docs/index.html`, and the documentation links.
+The local checkout's remote is configured separately with Git.
+
+The workflow in `.github/workflows/release.yml` tests and builds on pushes
+to `main`, pull requests, and manual runs. Pushing a `v`-prefixed version tag
+also stamps `APP_VERSION` and `GITHUB_REPO` using `tools/set_version.py`, then
+uploads the portable archive to a GitHub Release. The existing application
+version remains `1.1.0-linux.1` until a version tag replaces it.
+
+Configure GitHub Pages to serve the `main` branch's `/docs` folder. The website
+uses `docs/logo.svg` so its icon is included in the published folder. It falls
+back to source installation instructions when no matching x86_64 archive exists.
+
+## Check a portable bundle
+
+Build with `./build.sh`, extract the archive into a temporary directory, and
+run `./install.sh` inside the extracted folder. Set `XDG_DATA_HOME` and
+`VERSEFLOW_BIN_DIR` to temporary directories to avoid touching your normal app
+installation. Check the launcher, `.desktop` entry, icon, license, and credits.
+
+The release currently targets Linux x86_64 on Ubuntu 22.04. Other Linux
+architectures can be built locally; distro and compositor coverage should be
+reported only after testing those environments.
+
+## Settings compatibility
+
+New settings use `$XDG_CONFIG_HOME/verseflow/settings.json`. When that file is
+absent, the application first checks `$XDG_CONFIG_HOME/verseflow/settings.json`,
+then `$XDG_CONFIG_HOME/constelyric/settings.json`. Saving writes to the new path
+and leaves previous files available to older versions.
+
+## Attribution
+
+Keep [LICENSE](../LICENSE) and [CREDITS.md](../CREDITS.md) in redistributed
+bundles. See [BRANDING.md](BRANDING.md) for the logo assets and selection steps.
+
+Thank you, **[rajbhar-rohit](https://github.com/rajbhar-rohit)**, for creating
+**[Constelyric](https://github.com/rajbhar-rohit/Constelyric)** and sharing the
+open-source foundation for VerseFlow.

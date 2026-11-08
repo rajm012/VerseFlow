@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=VerseFlow
+Comment=Animated lyrics for your music
+Exec=verseflow
+Icon=verseflow
+Terminal=false
+Categories=AudioVideo;Audio;
+StartupWMClass=VerseFlow
